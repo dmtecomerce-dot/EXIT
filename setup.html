@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>EXIT – välj lösenord</title>
+<style>
+body{margin:0;font-family:system-ui,-apple-system,sans-serif;background:#ECECE9;color:#17191A}
+main{max-width:460px;margin:0 auto;padding:40px 20px}
+h1{font-size:30px;margin:0 0 8px}
+p{line-height:1.5;color:#4A4D50}
+label{display:block;font-weight:600;margin:18px 0 6px}
+input{width:100%;box-sizing:border-box;font-size:17px;padding:14px;border-radius:14px;border:1px solid #CFCCC4}
+button{margin-top:20px;width:100%;font-size:17px;font-weight:600;padding:15px;border:0;border-radius:999px;background:#17191A;color:#fff}
+textarea{width:100%;box-sizing:border-box;height:160px;margin-top:12px;font:12px ui-monospace,monospace;border-radius:12px;padding:10px}
+.err{color:#B3261E;font-weight:600}
+</style>
+</head>
+<body>
+<main>
+<h1>Välj lösenord</h1>
+<p>Lösenordet stannar i din telefon. Sidan skapar ett nyckelpar som är låst med lösenordet. Det du får nedan kan inte öppnas utan lösenordet, så det är säkert att skicka i chatten.</p>
+<form id="f">
+<label for="p1">Lösenord (minst 10 tecken)</label>
+<input id="p1" type="password" autocomplete="new-password" required minlength="10">
+<label for="p2">Upprepa</label>
+<input id="p2" type="password" autocomplete="new-password" required minlength="10">
+<button type="submit">Skapa nycklar</button>
+<p id="msg" role="status"></p>
+</form>
+<div id="out" hidden>
+<p><b>Klart.</b> Kopiera allt i rutan och klistra in i chatten med Claude.</p>
+<textarea id="t" readonly></textarea>
+<button id="copy" type="button">Kopiera</button>
+</div>
+</main>
+<script>
+const b64 = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf)));
+document.getElementById('f').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const msg = document.getElementById('msg');
+  const p1 = document.getElementById('p1').value, p2 = document.getElementById('p2').value;
+  if (p1 !== p2) { msg.className = 'err'; msg.textContent = 'Lösenorden matchar inte.'; return; }
+  if (p1.length < 10) { msg.className = 'err'; msg.textContent = 'Minst 10 tecken.'; return; }
+  msg.className = ''; msg.textContent = 'Skapar nycklar…';
+  const kp = await crypto.subtle.generateKey({ name: 'RSA-OAEP', modulusLength: 3072, publicExponent: new Uint8Array([1,0,1]), hash: 'SHA-256' }, true, ['encrypt', 'decrypt']);
+  const pub = await crypto.subtle.exportKey('jwk', kp.publicKey);
+  const pkcs8 = await crypto.subtle.exportKey('pkcs8', kp.privateKey);
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(p1), 'PBKDF2', false, ['deriveKey']);
+  const k = await crypto.subtle.deriveKey({ name: 'PBKDF2', salt, iterations: 600000, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['encrypt']);
+  const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, k, pkcs8);
+  const out = { v: 1, pub: { kty: pub.kty, n: pub.n, e: pub.e, alg: pub.alg }, salt: b64(salt), iv: b64(iv), it: 600000, ct: b64(ct) };
+  document.getElementById('t').value = JSON.stringify(out);
+  document.getElementById('f').hidden = true;
+  document.getElementById('out').hidden = false;
+});
+document.getElementById('copy').addEventListener('click', async () => {
+  const t = document.getElementById('t'); t.select();
+  try { await navigator.clipboard.writeText(t.value); document.getElementById('copy').textContent = 'Kopierat'; } catch (e) { document.execCommand('copy'); }
+});
+</script>
+</body>
+</html>

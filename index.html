@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="EXIT">
+<meta name="theme-color" content="#ECECE9">
+<meta name="robots" content="noindex, nofollow">
+<title>EXIT</title>
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#17191A; --muted:#5F6366; --soft:#8A8D90;
+  --card:rgba(255,255,255,.58); --card-b:rgba(255,255,255,.95);
+  --green:#3DAA5C; --green-l:#8EE07A; --orange:#E08A2C; --red:#D2513A;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:#ECECE9}
+body{font-family:'Inter Tight',system-ui,-apple-system,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;
+  background:linear-gradient(170deg,#DDE7D8 0%,#ECECE9 35%,#EEE8E0 100%) fixed}
+button{font:inherit;color:inherit}
+.app{max-width:480px;margin:0 auto;min-height:100dvh;padding:calc(env(safe-area-inset-top) + 22px) 20px calc(130px + env(safe-area-inset-bottom))}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+h1{margin:0;font-size:40px;font-weight:600;letter-spacing:-.03em}
+.round{width:48px;height:48px;border-radius:50%;border:1px solid var(--card-b);background:var(--card);display:inline-flex;align-items:center;justify-content:center;padding:0;position:relative;cursor:pointer}
+.round .dot{position:absolute;top:12px;right:13px;width:7px;height:7px;border-radius:50%;background:var(--green)}
+.round.spin svg{animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.icons{display:flex;gap:8px}
+.pills{display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;scrollbar-width:none}
+.pill{border:1px solid var(--card-b);border-radius:999px;background:rgba(255,255,255,.5);font-size:15px;font-weight:500;padding:12px 18px;white-space:nowrap;cursor:pointer;min-height:44px}
+.pill[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.card{background:var(--card);border:1px solid var(--card-b);border-radius:26px;padding:18px;margin-bottom:12px;box-shadow:0 8px 24px rgba(30,40,30,.04)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.lbl{font-size:13px;color:var(--muted)}
+.big{font-size:50px;font-weight:500;letter-spacing:-.03em;line-height:1.05}
+.mid{font-size:44px;font-weight:500;letter-spacing:-.03em;line-height:1.05}
+.badge{font-size:12px;font-weight:600;border-radius:6px;padding:3px 7px;color:#fff;background:var(--orange)}
+.badge.g{background:var(--green-l);color:var(--ink)}
+.badge.r{background:var(--red)}
+.badge.n{background:#E3E1DB;color:var(--ink)}
+.bar{flex:1;height:44px;border-radius:999px;background:rgba(255,255,255,.7);position:relative;overflow:hidden}
+.bar>div{position:absolute;inset:0 auto 0 0;border-radius:999px;background:linear-gradient(90deg,#F6A08A 0%,#E9C35C 45%,#7FDB6A 100%);display:flex;align-items:center;padding-left:16px;font-size:13px;font-weight:500;min-width:90px;transition:width .5s}
+h2{margin:22px 0 12px;font-size:24px;font-weight:500;letter-spacing:-.02em}
+.sub{font-size:13px;color:var(--muted);margin-top:6px}
+.title{font-size:16px;font-weight:500}
+.funnel{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.funnel div{background:rgba(255,255,255,.7);border-radius:16px;padding:12px}
+.funnel b{display:block;font-size:26px;font-weight:500;margin-top:2px}
+.list{display:flex;flex-direction:column;gap:10px}
+.item{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--card-b);border-radius:22px;padding:14px;text-decoration:none;color:inherit}
+.av{width:48px;height:48px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px}
+.av.g{background:linear-gradient(160deg,#D6F3CC,#6FD45E)}
+.av.o{background:linear-gradient(160deg,#F7D9B4,#EDA14B)}
+.av.n{background:#E3E1DB}
+.grow{flex:1;min-width:0}
+.ell{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.time{background:var(--ink);color:#fff;border-radius:999px;padding:10px 14px;font-size:15px;font-weight:500;flex:none}
+.score{font-size:20px;font-weight:600;flex:none}
+.empty{border:1.5px dashed #C9C6BE;border-radius:22px;padding:26px 18px;text-align:center;color:var(--muted);font-size:14px;line-height:1.5}
+.wave{position:relative;height:170px;margin:8px -18px -18px;border-radius:0 0 26px 26px;overflow:hidden}
+.wave i{position:absolute;inset:0;clip-path:polygon(0 30%,12% 42%,25% 55%,38% 62%,50% 50%,62% 40%,72% 22%,82% 12%,92% 26%,100% 18%,100% 100%,0 100%);
+  background:repeating-linear-gradient(90deg,rgba(255,255,255,0) 0 2px,rgba(246,245,241,.95) 2px 5px),linear-gradient(90deg,#A9E89A 0%,#C7E58A 30%,#F3C27A 55%,#F3A3A0 66%,#A9E89A 78%,#8EDF7A 100%)}
+.wave span{position:absolute;bottom:12px;font-size:14px;font-weight:500}
+.banner{background:#FFF3E6;border:1px solid #F1D3AE;color:#7A4A12;border-radius:18px;padding:12px 14px;font-size:14px;margin-bottom:12px;line-height:1.4}
+.fresh{font-size:12px;color:var(--soft);text-align:center;margin-top:16px}
+nav.tabbar{position:fixed;left:0;right:0;bottom:0;background:var(--ink);border-radius:34px 34px 0 0;padding:16px 14px calc(16px + env(safe-area-inset-bottom));display:flex;justify-content:space-around;align-items:center;z-index:5}
+nav.tabbar>div{max-width:480px;width:100%;margin:0 auto;display:flex;justify-content:space-around;align-items:center}
+.tab{background:none;border:0;color:#fff;display:flex;align-items:center;gap:8px;border-radius:999px;padding:12px;min-height:48px;min-width:48px;justify-content:center;cursor:pointer;font-size:15px;font-weight:500}
+.tab .t{display:none}
+.tab[aria-current="page"]{background:#fff;color:var(--ink);padding:12px 18px}
+.tab[aria-current="page"] .t{display:inline}
+.tab svg{stroke:currentColor}
+.lock{position:fixed;inset:0;z-index:20;background:linear-gradient(170deg,#DDE7D8 0%,#ECECE9 40%,#EEE8E0 100%);display:flex;align-items:center;justify-content:center;padding:24px}
+.lock form{width:100%;max-width:380px;background:var(--card);border:1px solid var(--card-b);border-radius:28px;padding:26px;display:flex;flex-direction:column;gap:14px}
+.lock input[type=password]{font:inherit;font-size:17px;padding:15px 16px;border-radius:16px;border:1px solid #D2CFC7;background:#fff}
+.lock .go{border:0;border-radius:999px;background:var(--ink);color:#fff;font-size:16px;font-weight:600;padding:15px;min-height:48px}
+.lock .chk{display:flex;gap:10px;align-items:center;font-size:15px}
+.logout{display:block;margin:10px auto 0;background:none;border:0;color:var(--soft);font-size:12px;text-decoration:underline;padding:10px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="lock" id="lock" hidden>
+  <form id="lockform">
+    <div style="font-size:34px;font-weight:600;letter-spacing:-.03em">EXIT</div>
+    <label for="pw" class="lbl">Lösenord</label>
+    <input id="pw" type="password" autocomplete="current-password" required>
+    <label class="chk"><input type="checkbox" id="remember" checked> Kom ihåg på den här enheten</label>
+    <button class="go" type="submit">Lås upp</button>
+    <p id="lockmsg" role="status" style="margin:0;color:var(--red);font-weight:600;min-height:20px"></p>
+  </form>
+</div>
+<main class="app">
+  <div class="top">
+    <h1 id="ttl">Översikt</h1>
+    <div class="icons">
+      <button class="round" id="refresh" aria-label="Uppdatera"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#17191A" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M20 12a8 8 0 11-2.3-5.6"/><path d="M20 4v5h-5"/></svg></button>
+      <button class="round" id="bell" aria-label="Starka signaler"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#17191A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0112 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 004 0"/></svg><span class="dot" id="belldot" hidden></span></button>
+    </div>
+  </div>
+  <div id="banner" class="banner" hidden></div>
+
+  <!-- ÖVERSIKT -->
+  <section id="v-oversikt">
+    <div class="pills" role="group" aria-label="Period">
+      <button class="pill" data-p="1" aria-pressed="true">I dag</button>
+      <button class="pill" data-p="3" aria-pressed="false">3 dagar</button>
+      <button class="pill" data-p="7" aria-pressed="false">7 dagar</button>
+      <button class="pill" data-p="3650" aria-pressed="false">Allt</button>
+    </div>
+    <div class="card">
+      <div class="row"><span class="lbl">Bevakade butiker</span><span class="lbl" id="o-ejkollad" style="color:var(--red);font-weight:600"></span></div>
+      <div class="big" id="o-butiker">–</div>
+      <div class="row" style="margin-top:10px"><div class="bar"><div id="o-bar" style="width:0%">Aktiva</div></div><span style="font-size:14px;font-weight:500" id="o-aktiva">–</span></div>
+    </div>
+    <h2>Nyckeltal</h2>
+    <div class="card">
+      <div class="row"><span class="title">Nya annonser</span><span class="lbl" id="o-period">i dag</span></div>
+      <div class="row" style="justify-content:flex-start;margin-top:6px"><span class="mid" id="o-nya">–</span><span class="badge n" id="o-nyprod"></span></div>
+      <div class="sub">från bevakade konkurrenter</div>
+    </div>
+    <div class="card">
+      <div class="row"><span class="title">Starka signaler</span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E08A2C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c1 3 5 5 5 10a5 5 0 01-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-6 1-9z"/></svg></div>
+      <div class="row" style="justify-content:flex-start;margin-top:6px"><span class="mid" id="o-starka">–</span><span class="badge">10k+ / 3 d</span></div>
+      <div class="sub" id="o-starka-sub">Push skickas vid träff</div>
+    </div>
+    <div class="card">
+      <div class="row"><span class="title">Störst räckvidd</span><span class="lbl ell" id="o-topname" style="max-width:55%"></span></div>
+      <div class="row" style="justify-content:flex-start;margin-top:6px"><span class="mid" id="o-top">–</span><span class="badge g">EU</span></div>
+      <div class="sub" id="o-topsub">bland loggade annonser</div>
+    </div>
+    <h2>Produktflöde</h2>
+    <div class="card"><div class="funnel" id="o-funnel"></div></div>
+  </section>
+
+  <!-- ANNONSER -->
+  <section id="v-annonser" hidden>
+    <div class="pills" role="group" aria-label="Filter">
+      <button class="pill" data-f="alla" aria-pressed="true">Alla</button>
+      <button class="pill" data-f="ny" aria-pressed="false">Nya produkter</button>
+      <button class="pill" data-f="stark" aria-pressed="false">Starka</button>
+    </div>
+    <div class="list" id="a-list"></div>
+  </section>
+
+  <!-- IDÉER -->
+  <section id="v-ideer" hidden>
+    <div class="card">
+      <div class="row"><span class="title">Produktidéer utomlands</span><span class="lbl" id="i-count"></span></div>
+      <div class="sub">DE · NL · FR · ES · IT · PL · UK · AU – sorterat på poäng</div>
+    </div>
+    <div class="list" id="i-list"></div>
+  </section>
+
+  <!-- BOTAR -->
+  <section id="v-botar" hidden>
+    <div class="card" style="padding-bottom:18px">
+      <div class="row"><span style="font-size:20px;font-weight:500">Nattens körningar</span><span style="font-size:16px;font-weight:600;color:var(--green)">2 aktiva</span></div>
+      <div class="wave"><i></i><span style="left:18px">00:00</span><span style="left:50%;transform:translateX(-50%)">04:00</span><span style="right:18px">06:00</span></div>
+    </div>
+    <h2>Teamet</h2>
+    <div class="list">
+      <div class="item"><span class="av g"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#17191A" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/></svg></span>
+        <div class="grow"><div class="title">Konkurrentbevakaren</div><div class="lbl" id="b1-last">Senast: –</div></div><span class="time">04:00</span></div>
+      <div class="item"><span class="av o"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#17191A" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M4 12h16M12 4a12 12 0 010 16M12 4a12 12 0 000 16"/></svg></span>
+        <div class="grow"><div class="title">Produktjägaren</div><div class="lbl" id="b2-last">Senast: –</div></div><span class="time">04:41</span></div>
+    </div>
+    <h2>På väg in</h2>
+    <div class="list">
+      <div class="item"><span class="av n">03</span><div class="grow"><div class="title">Annonsanalytikern</div><div class="lbl">Hooks och manus</div></div><span class="badge n">Planerad</span></div>
+      <div class="item"><span class="av n">04</span><div class="grow"><div class="title">Butiksbyggaren</div><div class="lbl">Testbutik vid "Testa"</div></div><span class="badge n">Planerad</span></div>
+      <div class="item"><span class="av n">05</span><div class="grow"><div class="title">Prisvakten</div><div class="lbl">Konkurrenters priser</div></div><span class="badge n">Planerad</span></div>
+      <div class="item"><span class="av n">06</span><div class="grow"><div class="title">Resultatvakten</div><div class="lbl">Egen ROAS</div></div><span class="badge n">Planerad</span></div>
+    </div>
+  </section>
+
+  <div class="fresh" id="fresh"></div>
+  <button class="logout" id="logout" type="button">Lås / logga ut</button>
+</main>
+
+<nav class="tabbar" aria-label="Huvudmeny"><div>
+  <button class="tab" data-v="oversikt" aria-current="page"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 17a8 8 0 1116 0"/><path d="M12 17l4-5"/></svg><span class="t">Översikt</span></button>
+  <button class="tab" data-v="annonser" aria-label="Annonser"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10v4h3l6 4V6L7 10z"/><path d="M17 9a4 4 0 010 6"/></svg><span class="t">Annonser</span></button>
+  <button class="tab" data-v="ideer" aria-label="Idéer"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M4 12h16M12 4a12 12 0 010 16M12 4a12 12 0 000 16"/></svg><span class="t">Idéer</span></button>
+  <button class="tab" data-v="botar" aria-label="Botar"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="8" width="14" height="11" rx="3"/><path d="M12 4v4M9 13h.01M15 13h.01"/></svg><span class="t">Botar</span></button>
+</div></nav>
+
+<script>
+(function(){
+  const DS = {
+    bev: 'collection://422b8d8d-9e7e-818a-aaaf-000b4bae812a',
+    logg: 'collection://422b8d8d-9e7e-818a-8c7c-000b6a09813e',
+    ideer: 'collection://422b8d8d-9e7e-81f9-afdb-000b80ba3399',
+    prod: 'collection://422b8d8d-9e7e-81da-b380-000be01e0273'
+  };
+  const QUERIES = {
+    bev: { data: { mode: 'rows', data_source_url: DS.bev, limit: 100 } },
+    logg: { data: { mode: 'rows', data_source_url: DS.logg, limit: 100, sort: [{ property: 'Första sedd', direction: 'descending' }] } },
+    ideer: { data: { mode: 'rows', data_source_url: DS.ideer, limit: 50, sort: [{ property: 'Poäng', direction: 'descending' }] } },
+    prod: { data: { mode: 'rows', data_source_url: DS.prod, limit: 100 } }
+  };
+  const state = { bev: null, logg: null, ideer: null, prod: null, period: 1, filter: 'alla', stored: null, errors: {} };
+  const $ = (id) => document.getElementById(id);
+  const TITLES = { oversikt: 'Översikt', annonser: 'Annonser', ideer: 'Idéer', botar: 'Botar' };
+
+  function el(tag, attrs, kids){
+    const n = document.createElement(tag);
+    if (attrs) for (const k in attrs){ if (k === 'class') n.className = attrs[k]; else if (k === 'text') n.textContent = attrs[k]; else n.setAttribute(k, attrs[k]); }
+    (kids || []).forEach(c => { if (c != null) n.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); });
+    return n;
+  }
+  function rowsOf(res){
+    let p = res && res.payload !== undefined ? res.payload : res;
+    for (let i = 0; i < 3; i++){
+      if (typeof p === 'string'){ try { p = JSON.parse(p); } catch(e){ return []; } }
+      else if (p && Array.isArray(p.content)){ const t = p.content.find(c => c && c.type === 'text'); if (!t) return []; p = t.text; }
+      else if (p && p.structuredContent){ p = p.structuredContent; }
+      else break;
+    }
+    return (p && Array.isArray(p.results)) ? p.results : [];
+  }
+  const num = (v) => { const n = Number(String(v == null ? '' : v).replace(/\s/g, '').replace(',', '.')); return isFinite(n) ? n : 0; };
+  const yes = (v) => v === true || v === '__YES__' || v === 'Yes' || v === 'true';
+  const fmt = (n) => Math.round(n).toLocaleString('sv-SE');
+  const today = () => new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Stockholm' }).format(new Date());
+  function daysAgo(d){ if (!d) return 9999; const a = new Date(today() + 'T00:00:00'); const b = new Date(String(d).slice(0,10) + 'T00:00:00'); return Math.round((a - b) / 86400000); }
+  const safeUrl = (u) => (typeof u === 'string' && /^https:\/\//.test(u)) ? u : null;
+  function maxDate(rows, key){ let m = ''; (rows || []).forEach(r => { const v = r[key]; if (v && v > m) m = v; }); return m; }
+  function niceDate(d){ if (!d) return 'inte kört än'; const n = daysAgo(d); return n === 0 ? 'i dag' : n === 1 ? 'i går' : String(d).slice(0,10); }
+
+  function renderOversikt(){
+    const bev = state.bev || [];
+    const aktiva = bev.filter(r => r.Status === 'Aktiv' || r.Status === 'Testar').length;
+    const ej = bev.filter(r => /ej kollad/i.test(r['Lärdom'] || '')).length;
+    $('o-butiker').textContent = state.bev ? String(bev.length) : '–';
+    $('o-aktiva').textContent = state.bev ? aktiva + ' / ' + bev.length : '–';
+    $('o-bar').style.width = bev.length ? Math.max(20, Math.round(aktiva / bev.length * 100)) + '%' : '0%';
+    $('o-ejkollad').textContent = ej ? ej + ' ej kollade' : '';
+
+    const logg = state.logg || [];
+    const p = state.period;
+    const inPeriod = logg.filter(r => daysAgo(r['date:Första sedd:start']) < p);
+    $('o-period').textContent = p === 1 ? 'i dag' : p === 3650 ? 'totalt' : 'senaste ' + p + ' dagar';
+    $('o-nya').textContent = state.logg ? String(inPeriod.length) : '–';
+    const nyprod = inPeriod.filter(r => yes(r['Ny produkt'])).length;
+    $('o-nyprod').textContent = nyprod ? nyprod + ' ny produkt' + (nyprod > 1 ? 'er' : '') : '';
+    $('o-nyprod').hidden = !nyprod;
+
+    const starka = logg.filter(r => /^Stark/.test(r.Signal || ''));
+    $('o-starka').textContent = state.logg ? String(starka.length) : '–';
+    $('o-starka-sub').textContent = starka.length ? 'Senast: ' + (starka[0]['Produkt'] || starka[0]['Facebook-sida'] || '') : 'Push skickas vid träff';
+    $('belldot').hidden = !starka.some(r => daysAgo(r['date:Första sedd:start']) <= 3);
+
+    let top = null; logg.forEach(r => { if (!top || num(r['Räckvidd senast']) > num(top['Räckvidd senast'])) top = r; });
+    if (top && num(top['Räckvidd senast']) > 0){
+      $('o-top').textContent = fmt(num(top['Räckvidd senast']));
+      $('o-topname').textContent = top['Facebook-sida'] || '';
+      $('o-topsub').textContent = top['Produkt'] || 'bland loggade annonser';
+    } else { $('o-top').textContent = state.logg ? '0' : '–'; $('o-topname').textContent = ''; $('o-topsub').textContent = 'Fylls på efter nattens körning'; }
+
+    const steps = ['1 Idé','2 Testa','3 Butik byggs','4 Annonser','5 Live','6 Skala'];
+    const f = $('o-funnel'); f.textContent = '';
+    steps.forEach(s => {
+      const c = (state.prod || []).filter(r => r.Status === s).length;
+      f.appendChild(el('div', null, [el('span', { class: 'lbl', text: s.replace(/^\d /, '') }), el('b', { text: state.prod ? String(c) : '–' })]));
+    });
+  }
+
+  function renderAnnonser(){
+    const list = $('a-list'); list.textContent = '';
+    let rows = state.logg || [];
+    if (state.filter === 'ny') rows = rows.filter(r => yes(r['Ny produkt']));
+    if (state.filter === 'stark') rows = rows.filter(r => /^Stark/.test(r.Signal || ''));
+    if (!rows.length){ list.appendChild(el('div', { class: 'empty', text: state.logg ? 'Inga annonser här än. Konkurrentbevakaren fyller på varje natt.' : 'Laddar…' })); return; }
+    rows.slice(0, 60).forEach(r => {
+      const stark = /^Stark/.test(r.Signal || '');
+      const reach = num(r['Räckvidd senast']);
+      const url = safeUrl(r['Annonslänk']);
+      const item = el(url ? 'a' : 'div', url ? { class: 'item', href: url, target: '_blank', rel: 'noopener' } : { class: 'item' }, [
+        el('span', { class: 'av ' + (stark ? 'o' : yes(r['Ny produkt']) ? 'g' : 'n'), text: (r['Facebook-sida'] || '?').slice(0,2).toUpperCase() }),
+        el('div', { class: 'grow' }, [
+          el('div', { class: 'title ell', text: r['Produkt'] || r['Facebook-sida'] || r['Annons-ID'] || 'Annons' }),
+          el('div', { class: 'lbl ell', text: (r['Facebook-sida'] || '') + ' · ' + niceDate(r['date:Första sedd:start']) })
+        ]),
+        el('span', { class: stark ? 'badge' : 'badge n', text: reach ? fmt(reach) : (r.Signal || 'Bevakas') })
+      ]);
+      list.appendChild(item);
+    });
+  }
+
+  function renderIdeer(){
+    const list = $('i-list'); list.textContent = '';
+    const rows = (state.ideer || []).filter(r => r.Status !== 'Avfärdad');
+    $('i-count').textContent = state.ideer ? rows.length + ' st' : '';
+    if (!rows.length){ list.appendChild(el('div', { class: 'empty', text: state.ideer ? 'Inga idéer än. Produktjägaren lägger in fynd varje natt kl 04:41.' : 'Laddar…' })); return; }
+    rows.forEach(r => {
+      const sc = num(r['Poäng']);
+      const land = Array.isArray(r.Land) ? r.Land.join(' ') : String(r.Land || '').replace(/[\[\]"]/g, '').replace(/,/g, ' ');
+      const url = safeUrl(r['Annonslänk']) || safeUrl(r['Butikslänk']);
+      const meta = [land, r['Äldsta aktiva annons (dagar)'] ? num(r['Äldsta aktiva annons (dagar)']) + ' d' : '', num(r['Räckvidd EU']) ? fmt(num(r['Räckvidd EU'])) + ' räckv.' : ''].filter(Boolean).join(' · ');
+      list.appendChild(el(url ? 'a' : 'div', url ? { class: 'item', href: url, target: '_blank', rel: 'noopener' } : { class: 'item' }, [
+        el('span', { class: 'av ' + (sc >= 70 ? 'g' : sc >= 50 ? 'o' : 'n'), text: land.slice(0,2) || '–' }),
+        el('div', { class: 'grow' }, [el('div', { class: 'title ell', text: r['Produkt'] || 'Produkt' }), el('div', { class: 'lbl ell', text: meta || (r['Kategori'] || '') })]),
+        el('span', { class: 'score', text: sc ? String(Math.round(sc)) : '–' })
+      ]));
+    });
+  }
+
+  function renderBotar(){
+    $('b1-last').textContent = 'Senast: ' + niceDate(maxDate(state.bev, 'date:Senast kollad:start')) + ' · ' + (state.bev ? state.bev.length + ' butiker' : '');
+    $('b2-last').textContent = 'Senast: ' + niceDate(maxDate(state.ideer, 'date:Hittad:start')) + ' · ' + (state.ideer ? state.ideer.length + ' idéer' : '');
+  }
+
+  function renderAll(){
+    renderOversikt(); renderAnnonser(); renderIdeer(); renderBotar();
+    const errs = Object.keys(state.errors);
+    const b = $('banner');
+    if (errs.length){ b.hidden = false; b.textContent = state.errors[errs[0]]; } else b.hidden = true;
+    $('fresh').textContent = state.stored ? 'Uppdaterad ' + new Date(state.stored).toLocaleString('sv-SE', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '';
+  }
+
+  // Navigation
+  document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+    const v = t.getAttribute('data-v');
+    document.querySelectorAll('.tab').forEach(x => { if (x === t) x.setAttribute('aria-current', 'page'); else x.removeAttribute('aria-current'); });
+    ['oversikt','annonser','ideer','botar'].forEach(k => { $('v-' + k).hidden = k !== v; });
+    $('ttl').textContent = TITLES[v];
+    window.scrollTo(0, 0);
+  }));
+  document.querySelectorAll('[data-p]').forEach(b => b.addEventListener('click', () => {
+    state.period = Number(b.getAttribute('data-p'));
+    document.querySelectorAll('[data-p]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    renderOversikt();
+  }));
+  document.querySelectorAll('[data-f]').forEach(b => b.addEventListener('click', () => {
+    state.filter = b.getAttribute('data-f');
+    document.querySelectorAll('[data-f]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    renderAnnonser();
+  }));
+  $('bell').addEventListener('click', () => { document.querySelector('.tab[data-v="annonser"]').click(); document.querySelector('[data-f="stark"]').click(); });
+
+  renderAll();
+
+  // Data: krypterad fil som byggs varje morgon
+  const b64d = (s) => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+  const LS = 'exit-pk';
+  async function decryptWith(pkcs8){
+    const priv = await crypto.subtle.importKey('pkcs8', pkcs8, { name: 'RSA-OAEP', hash: 'SHA-256' }, false, ['decrypt']);
+    const res = await fetch('data.enc.json?t=' + Date.now(), { cache: 'no-store' });
+    if (!res.ok) throw new Error('nodata');
+    const enc = await res.json();
+    const raw = await crypto.subtle.decrypt({ name: 'RSA-OAEP' }, priv, b64d(enc.ek));
+    const key = await crypto.subtle.importKey('raw', raw, 'AES-GCM', false, ['decrypt']);
+    const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64d(enc.iv) }, key, b64d(enc.ct));
+    return JSON.parse(new TextDecoder().decode(plain));
+  }
+  function apply(d){
+    state.bev = d.bev || []; state.logg = d.logg || []; state.ideer = d.ideer || []; state.prod = d.prod || [];
+    state.stored = d.generated ? Date.parse(d.generated) : null;
+    state.errors = {};
+    $('lock').hidden = true;
+    renderAll();
+  }
+  async function unlockWithPassword(pw){
+    const keys = await (await fetch('keys.json', { cache: 'no-store' })).json();
+    const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveKey']);
+    const k = await crypto.subtle.deriveKey({ name: 'PBKDF2', salt: b64d(keys.salt), iterations: keys.it || 600000, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+    const pkcs8 = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64d(keys.iv) }, k, b64d(keys.ct));
+    return pkcs8;
+  }
+  async function load(){
+    const r = $('refresh'); r.classList.add('spin');
+    try {
+      const saved = localStorage.getItem(LS);
+      if (!saved){ $('lock').hidden = false; return; }
+      apply(await decryptWith(b64d(saved)));
+    } catch(e){
+      if (e && e.message === 'nodata'){ state.errors.d = 'Ingen data publicerad än. Första uppdateringen kommer efter nattens körning.'; renderAll(); }
+      else { try { localStorage.removeItem(LS); } catch(_){} $('lock').hidden = false; }
+    } finally { r.classList.remove('spin'); }
+  }
+  $('lockform').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const m = $('lockmsg'); m.textContent = 'Låser upp…';
+    try {
+      const pkcs8 = await unlockWithPassword($('pw').value);
+      if ($('remember').checked){ try { localStorage.setItem(LS, btoa(String.fromCharCode(...new Uint8Array(pkcs8)))); } catch(_){} }
+      $('pw').value = ''; m.textContent = '';
+      try { apply(await decryptWith(pkcs8)); }
+      catch(err){ $('lock').hidden = true; state.errors.d = 'Ingen data publicerad än. Första uppdateringen kommer efter nattens körning.'; renderAll(); }
+    } catch(err){ m.textContent = 'Fel lösenord.'; }
+  });
+  $('refresh').addEventListener('click', load);
+  $('logout').addEventListener('click', () => { try { localStorage.removeItem(LS); } catch(_){} location.reload(); });
+  load();
+})();
+</script>
+</body>
+</html>
